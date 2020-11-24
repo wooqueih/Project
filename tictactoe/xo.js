@@ -28,19 +28,28 @@ var ctx = canvas.getContext("2d");
 var circ = true;
 var coordinate = {
     squareAmount:3,
-    col:function(num){return canvas.width/this.squareAmount*num},
-    row:function(num){return canvas.height/this.squareAmount*num}
+    spaceNum: (col, row) => col+row*coordinate.squareAmount,
+    col:num => canvas.width/coordinate.squareAmount*num,
+    row:num => canvas.height/coordinate.squareAmount*num
 };
+var usedSpace = [];
+for(let i = 0;i < coordinate.squareAmount**2;i++) {usedSpace[i] = false}
+console.log(usedSpace);
 canvas.addEventListener('click', (e) => {
+    let c, r;
     mouse = {
     x:e.x-canvas.offsetLeft,
     y:e.y-canvas.offsetTop
     }
     console.log(mouse);
-    for(let i = 0;coordinate.col(i) < mouse.x;i++){col = i}
-    for(let i = 0;coordinate.row(i) < mouse.y;i++){row = i}
-    if(circ == true){o(col, row)}
-    else{x(col, row)}
-    circ = !circ;
+    for(let i = 0;coordinate.col(i) < mouse.x;i++) {c = i}
+    for(let i = 0;coordinate.row(i) < mouse.y;i++) {r = i}
+    if(usedSpace[coordinate.spaceNum(c, r)] == false) {
+        if(circ == true){o(c, r)}
+        else{x(c, r)}
+        circ = !circ;
+        usedSpace[coordinate.spaceNum(c, r)] = true;
+        console.log("placed");
+    }
 });
 playFieldLines();
